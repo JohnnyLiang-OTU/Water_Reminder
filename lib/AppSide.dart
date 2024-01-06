@@ -96,22 +96,61 @@ class _AppSideState extends State<AppSide>
   }
 
   // ************************************** WIDGETS ****************************************
-
+  TextEditingController _hoursController = TextEditingController();
+  TextEditingController _minutesController = TextEditingController();
   Widget SettingScreen()
   {
     return Scaffold(
       appBar: AppBar(
         title: Text("Hello"),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-
-          },
-          child: Text('Open Time Picker'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _hoursController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Hours',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: TextField(
+                    controller: _minutesController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Minutes',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Validate and handle the input
+                _handleInput();
+              },
+              child: Text('Submit'),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  void _handleInput()
+  {
+
   }
 
   void openSettings()
