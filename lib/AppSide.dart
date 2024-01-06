@@ -11,7 +11,8 @@ class AppSide extends StatefulWidget
 
 class _AppSideState extends State<AppSide>
 {
-
+  bool isSwitched = false;
+  int intervalInMinutes = 5;
   @override
   void initState() {
     AwesomeNotifications().setListeners(
@@ -22,22 +23,127 @@ class _AppSideState extends State<AppSide>
     );
     super.initState();
   }
+  // @override
+  // // Widget build(BuildContext context) {
+  // //   return Scaffold(
+  // //     appBar: AppBar(
+  // //       title: Text('Simple Flutter App'),
+  // //       actions: [
+  // //         IconButton(onPressed: stopNotification, icon: const Icon(Icons.cancel)),
+  // //       ],
+  // //     ),
+  // //     floatingActionButton: FloatingActionButton(
+  // //       onPressed: scheduleNotification,
+  // //       child: const Icon(Icons.notification_add),
+  // //     ),
+  // //     );
+  // // }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Simple Flutter App'),
+        title: Text("Bombo"),
+        actions: [
+          IconButton(
+              onPressed: openSettings,
+              icon: Icon(Icons.settings)),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: scheduleNotification,
-        child: Icon(Icons.notification_add),
+      body: Center(
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              isSwitched = !isSwitched;
+            });
+            if(isSwitched)
+              {
+                scheduleNotification();
+              }
+            else
+              {
+                stopNotification();
+              }
+          },
+          child: Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: isSwitched ? Colors.green : Colors.grey,
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.power_settings_new,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 8.0),
+                Text(
+                  isSwitched ? 'ON' : 'OFF',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
-      );
+    );
   }
+
+  // ************************************** WIDGETS ****************************************
+
+  Widget SettingScreen()
+  {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Hello"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+
+          },
+          child: Text('Open Time Picker'),
+        ),
+      ),
+    );
+  }
+
+  void openSettings()
+  {
+    Navigator.push(
+      context,
+        MaterialPageRoute(
+        builder: (context) => SettingScreen(),
+        ));
+  }
+
+
+
+  // *********************************** NOTIFICATIONS **********************************
+  void stopNotification()
+  {
+    final AwesomeNotifications awesome = AwesomeNotifications();
+    try{
+      log("Cancelled all Schedules");
+      awesome.cancelAllSchedules();
+    }
+    catch(e){
+      log("Error:",
+          error: e);
+    }
+  }
+
 
   Future<bool> scheduleNotification() async
   {
     final AwesomeNotifications awesome = AwesomeNotifications();
+    log("Scheduled Activated");
     return await awesome.createNotification(
         content: NotificationContent(
           id: 0,
